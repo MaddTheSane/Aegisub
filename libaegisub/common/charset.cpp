@@ -29,6 +29,13 @@ namespace agi { namespace charset {
 std::string Detect(agi::fs::path const& file) {
 	agi::read_file_mapping fp(file);
 
+	// Look for utf-8 BOM
+	if (fp.size() >= 3) {
+		const char* buf = fp.read(0, 3);
+		if (!strncmp(buf, "\xef\xbb\xbf", 3))
+			return "utf-8";
+	}
+
 	// If it's over 100 MB it's either binary or big enough that we won't
 	// be able to do anything useful with it anyway
 	if (fp.size() > 100 * 1024 * 1024)
