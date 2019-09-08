@@ -29,13 +29,6 @@ namespace agi { namespace charset {
 std::string Detect(agi::fs::path const& file) {
 	agi::read_file_mapping fp(file);
 
-	// Look for utf-8 BOM
-	if (fp.size() >= 3) {
-		const char* buf = fp.read(0, 3);
-		if (!strncmp(buf, "\xef\xbb\xbf", 3))
-			return "utf-8";
-	}
-
 #ifdef WITH_UCHARDET
 	agi::scoped_holder<uchardet_t> ud(uchardet_new(), uchardet_delete);
 	for (uint64_t offset = 0; offset < fp.size(); ) {
